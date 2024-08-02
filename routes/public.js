@@ -41,7 +41,7 @@ router.post('/login', async(req, res) => {
         if (user.password !== password) // Se password do usuário for diferente do password obtido no req.body...
             return res.status(401).json ({error: "Senha incorreta!"})
 
-        // req.session.user = user // Armazena informações do usuário na sessão
+        req.session.user = user // Armazena informações do usuário na sessão
         res.status(200).json({message: 'Login bem sucedido'})
     }catch(error){
         res.status(500).json({error : 'Erro interno do servidor registrar o usuário'})
