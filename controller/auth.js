@@ -4,7 +4,7 @@ require('dotenv').config()
 const secret = process.env.JWT_TOKEN 
 
 
-function tokenVerify(req, res, next){
+function tokenVerify(req, res, next){   
     const token = req.header('Authorization')
     if (!token) return res.status(401).json({error: 'Acesso não permitido!'})
     try{

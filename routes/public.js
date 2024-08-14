@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require('express'); 
 const Cadastro = require('../models/users')
 const router = express.Router()
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt')        
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
@@ -16,11 +16,11 @@ router.post('/register', async(req, res) => {
     
     try{
         await user.save() // Tenta salvar o usuário
-        res.status(200).json(user)
         console.log('Usuário salvo com sucesso!')
+        return res.status(200).json(user)
     }catch(error){
-        res.status(500).json({error : 'Erro ao registrar o usuário'})
         console.log(error)
+        return res.status(500).json({error : 'Erro ao registrar o usuário'})
     }
 
 })
@@ -42,10 +42,13 @@ router.post('/login', async(req, res) => {
 
         bcrypt.compare(password, user.password, (err, result) => { // compara o input com o hash armazenado
             if (err){
-                res.status(401).json({error: "A senha digitada está incorreta!"})
+                res.status(403).json({error: 'Ocorreu um erro a desemcriptar a senha!'})
                 console.error(err)
                 return
             } else{
+                if(result == 0){
+                    return res.status(403).json({error: "A senha digitada está incorreta!"})
+                }
                 const token = jwt.sign({userId: user._id}, secret, {expiresIn: '1h'}) //userId receberá user._id armazenado no DB
                 res.status(200).json({message: 'Login bem sucedido', token:token})
             }}) 
